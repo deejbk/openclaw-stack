@@ -82,4 +82,5 @@ def search_markdown(query: str, limit: int = 8) -> SearchResult:
 
 
 if __name__ == "__main__":
-    mcp.run(transport="streamable-http", host="0.0.0.0", port=9000)
+    import uvicorn
+    uvicorn.run(mcp.streamable_http_app(), host="0.0.0.0", port=9000)
