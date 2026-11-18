@@ -70,27 +70,17 @@ INFO:     Uvicorn running on http://0.0.0.0:9000 (Press CTRL+C to quit)
 
 ## Test the MCP server
 
-Run these from a second terminal (no venv required). All commands are single-line.
+The MCP streamable-http protocol requires a session handshake before any request. Raw curl will always fail with "Missing session ID" — use the test script instead.
 
-**Check the server is up:**
-
-```bash
-curl -s http://localhost:9000/mcp
-```
-
-**List available tools:**
+Run from project root with the venv active:
 
 ```bash
-curl -s -X POST http://localhost:9000/mcp -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
+python tool_api/test_mcp.py Jeeves 5
 ```
 
-**Call `search_markdown`:**
+Arguments: `query` (default: `test`), `limit` (default: `3`).
 
-```bash
-curl -s -X POST http://localhost:9000/mcp -H "Content-Type: application/json" -H "Accept: application/json, text/event-stream" -d '{"jsonrpc":"2.0","id":2,"method":"tools/call","params":{"name":"search_markdown","arguments":{"query":"test","limit":3}}}'
-```
-
-Responses are returned as SSE (`text/event-stream`) — lines prefixed with `data:`. This is expected.
+The script initializes a session, lists tools, then calls `search_markdown` with the given query.
 
 ---
 
@@ -113,4 +103,5 @@ Then restart the server.
 |---|---|
 | `tool_api/app.py` | FastAPI REST app — do not modify |
 | `tool_api/search_mcp.py` | MCP server wrapping the same search logic |
+| `tool_api/test_mcp.py` | Smoke test script for the MCP server |
 | `tool_api/requirements.txt` | Pinned dependencies for the venv |
